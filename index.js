@@ -14,8 +14,12 @@ server.use(express.json());
 
 const users = ['Marcelo', 'Diego', 'José'];
 
+
+// Listar todos os usuários
 server.get('/users', (req, res) => res.json(users));
 
+
+// Listar usuários pelo id
 server.get('/users/:index', (req, res) => {
   // eslint-disable-next-line prefer-destructuring
   const { index } = req.params;
@@ -23,12 +27,34 @@ server.get('/users/:index', (req, res) => {
   return res.json(users[index]);
 });
 
+// Criar usuários
 server.post('/users', (req, res) => {
   const { name } = req.body;
 
   users.push(name);
 
   return res.json(users);
+});
+
+
+// Editando usuários
+server.put('/users/:index', (req, res) => {
+  const { index } = req.params;
+  const { name } = req.body;
+
+  users[index] = name;
+
+  return res.json(users);
+});
+
+
+// Deletando Usuários
+server.delete('/users/:index', (req, res) => {
+  const { index } = req.params;
+
+  users.splice(index, 1);
+
+  return res.send();
 });
 
 server.listen(3000);
