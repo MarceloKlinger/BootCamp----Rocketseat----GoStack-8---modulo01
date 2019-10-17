@@ -14,21 +14,40 @@ server.use(express.json());
 
 const users = ['Marcelo', 'Diego', 'José'];
 
+// middlewares
+server.use((req, res, next) => {
+  console.log('Time:', Date.now());
+  next();
+});
+
+function checkUserExists(req, res, next) {
+  if (!req.body.name) {
+    return res.status(400).json({ error: 'User name is required' });
+  }
+
+  return next();
+}
+
+function checkUserInArray(req, res, next) {
+  const user = users[req.params.index];
+  if (!user) {
+    return res.status(400).json({ error: 'User does not exists' });
+  }
+
+  req.user = user;
+  return next();
+}
+
 
 // Listar todos os usuários
 server.get('/users', (req, res) => res.json(users));
 
 
 // Listar usuários pelo id
-server.get('/users/:index', (req, res) => {
-  // eslint-disable-next-line prefer-destructuring
-  const { index } = req.params;
-
-  return res.json(users[index]);
-});
+server.get('/users/:index', checkUserInArray, (req, res) => res.json(req.user));
 
 // Criar usuários
-server.post('/users', (req, res) => {
+server.post('/users', checkUserExists, (req, res) => {
   const { name } = req.body;
 
   users.push(name);
@@ -38,7 +57,7 @@ server.post('/users', (req, res) => {
 
 
 // Editando usuários
-server.put('/users/:index', (req, res) => {
+server.put('/users/:index', checkUserExists, checkUserInArray, (req, res) => {
   const { index } = req.params;
   const { name } = req.body;
 
@@ -49,7 +68,7 @@ server.put('/users/:index', (req, res) => {
 
 
 // Deletando Usuários
-server.delete('/users/:index', (req, res) => {
+server.delete('/users/:index', checkUserInArray, (req, res) => {
   const { index } = req.params;
 
   users.splice(index, 1);
