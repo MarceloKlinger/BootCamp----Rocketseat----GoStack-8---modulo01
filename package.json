@@ -1,0 +1,10 @@
+{
+  "name": "BootCamp----Rocketseat----GoStack-8---modulo01",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Marcelo Klinger <marcelo.klinger@hotmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
